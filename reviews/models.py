@@ -61,6 +61,7 @@ class BookContributor(models.Model):
         AUTHOR = "AUTHOR", "Author"
         CO_AUTHOR = "CO_AUTHOR", "Co-Author"
         EDITOR = "EDITOR", "Editor"
+        COMMENTATOR = "COMMENTATOR", "Commentator"
 
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     contributor = models.ForeignKey(Contributor, on_delete=models.CASCADE)
@@ -71,7 +72,7 @@ class BookContributor(models.Model):
     )
     
     def __str__(self):
-        return self.role
+        return str(self.contributor)
 
 class Review(models.Model):
     content = models.TextField(help_text="The Review text.")

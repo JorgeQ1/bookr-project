@@ -20,16 +20,20 @@ class BookAdmin(admin.ModelAdmin):
         )
 
 
-
-
 class ContributorAdmin(admin.ModelAdmin):
     list_display = ('last_names', 'first_names')
     search_fields  = ('last_names__startswith', 'first_names')
     list_filter = ('last_names',)
+    
+class BookContributorAdmin(admin.ModelAdmin):
+    list_display = ('role', 'contributor')
+
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('book', 'creator')
 
 # Register your models here.
 admin.site.register(Book, BookAdmin)
 admin.site.register(Contributor, ContributorAdmin)
-admin.site.register(Review)
-admin.site.register(BookContributor)
+admin.site.register(Review, ReviewAdmin)
+admin.site.register(BookContributor, BookContributorAdmin)
 admin.site.register(Publisher)
