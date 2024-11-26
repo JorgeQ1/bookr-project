@@ -6,7 +6,7 @@ from django.contrib import auth
 class Publisher(models.Model):
     name = models.CharField(max_length=50, help_text="The name of the Publisher.")
     website = models.URLField(help_text="The Publisher's website")
-    email = models.EmailField("The Publisher's email address.")
+    email = models.EmailField(help_text="The Publisher's email address.")
     
     def __str__(self):
         return self.name
@@ -20,9 +20,19 @@ class Book(models.Model):
     isbn = models.CharField(max_length=20, verbose_name="ISBN number of the book.")
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
     contributors = models.ManyToManyField("Contributor", through="BookContributor")
-    
+
     def __str__(self):
-        return self.title
+        return "{} ({})".format(self.title, self.isbn)
+
+    def isbn13(self):
+        """'9780316769174' => '978-0-31-676917-4'"""
+        return "{}-{}-{}-{}-{}".format(
+            self.isbn[0:3],
+            self.isbn[3:4],
+            self.isbn[4:6],
+            self.isbn[6:12],
+            self.isbn[12:13],
+        )
 
 
 class Contributor(models.Model):
@@ -35,9 +45,15 @@ class Contributor(models.Model):
         max_length=50, help_text="The contributor's last name or names."
     )
     email = models.EmailField(help_text="The contact email for the contributor.")
-    
+
+    def initialled_name(self):
+        """self.first_names='Jerome David', self.last_names='Salinger'
+        => 'Salinger, JD'"""
+        initials = "".join([name[0] for name in self.first_names.split(" ")])
+        return "{}, {}".format(self.last_names, initials)
+
     def __str__(self):
-        return self.first_names
+        return self.initialled_name()
 
 
 class BookContributor(models.Model):
